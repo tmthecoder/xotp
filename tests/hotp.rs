@@ -4,14 +4,14 @@ static SECRET_BYTES: &[u8] = "12345678901234567890".as_bytes();
 static SECRET_STRING: &'static str = "12345678901234567890";
 
 /// Generic test method to get the HOTP code with
-/// the RFC Secret Key as a byte array
+/// the Secret Key as a byte array
 fn run_rfc_test(count: u64) -> u32 {
     let hotp = HOTP::new(SECRET_BYTES);
     hotp.get_otp(count, 6)
 }
 
 /// Generic test method to get the HOTP code with
-/// the RTC Secret Key as a String Literal
+/// the Secret Key as a string literal
 fn run_rfc_test_direct(count: u64) -> u32 {
     let hotp = HOTP::from_utf8(SECRET_STRING);
     hotp.get_otp(count, 6)

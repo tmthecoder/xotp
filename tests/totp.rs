@@ -17,23 +17,30 @@ static SECRET_STRING_SHA512: &str = "12345678901234567890\
         1234";
 static SECRET_BYTES_SHA512: &[u8] = SECRET_STRING_SHA512.as_bytes();
 
-// Generic runners for the each provided initialization method
+/// Generic test method to get the TOTP code with
+/// the SHA1 Secret Key as a byte array
 fn run_rfc_test(time: u64) -> u32 {
     let totp = TOTP::new(SECRET_BYTES_SHA1);
     totp.get_otp_with_custom(time, 30, 0, 8)
 }
 
+/// Generic test method to get the TOTP code with
+/// the given digest's Secret Key as a byte array
 fn run_rfc_test_with_digest(time: u64, digest: MacDigest) -> u32 {
     let secret = if let MacDigest::SHA256 = digest { SECRET_BYTES_SHA256 } else { SECRET_BYTES_SHA512 };
     let totp = TOTP::new_with_digest(secret, digest);
     totp.get_otp(time, 8)
 }
 
+/// Generic test method to get the TOTP code with
+/// the SHA1 Secret Key as a string literal
 fn run_rfc_test_direct(time: u64) -> u32 {
     let totp = TOTP::from_utf8(SECRET_STRING_SHA1);
     totp.get_otp_with_custom(time, 30, 0, 8)
 }
 
+/// Generic test method to get the TOTP code with
+/// the given digest's  Secret Key as a string literal
 fn run_rfc_test_direct_with_digest(time: u64, digest: MacDigest) -> u32 {
     let secret = if let MacDigest::SHA256 = digest { SECRET_STRING_SHA256 } else { SECRET_STRING_SHA512 };
     let totp = TOTP::from_utf8_with_digest(secret, digest);
