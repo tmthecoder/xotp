@@ -48,7 +48,8 @@ mod tests {
         hotp.get_otp(count, 6)
     }
 
-    // All RFC4226 Test Cases (All SHA1) - Ran with 'SECRET_BYTES'
+    // All RFC4226 Test Cases (All SHA1)
+    //Tests 1-5 run with SECRET_BYTES, 6-10 run with SECRET_STRING
     #[test]
     fn rfc_test_case_1() {
         assert_eq!(run_rfc_test(0), 755224)
@@ -76,52 +77,26 @@ mod tests {
 
     #[test]
     fn rfc_test_case_6() {
-        assert_eq!(run_rfc_test(5), 254676)
+        assert_eq!(run_rfc_test_direct(5), 254676)
     }
 
     #[test]
     fn rfc_test_case_7() {
-        assert_eq!(run_rfc_test(6), 287922)
+        assert_eq!(run_rfc_test_direct(6), 287922)
     }
 
     #[test]
     fn rfc_test_case_8() {
-        assert_eq!(run_rfc_test(7), 162583)
+        assert_eq!(run_rfc_test_direct(7), 162583)
     }
 
     #[test]
     fn rfc_test_case_9() {
-        assert_eq!(run_rfc_test(8), 399871)
+        assert_eq!(run_rfc_test_direct(8), 399871)
     }
 
     #[test]
     fn rfc_test_case_10() {
-        assert_eq!(run_rfc_test(9), 520489)
-    }
-
-    // Test the direct String initializer with the first 5 RFC Tests
-    #[test]
-    fn rfc_test_case_1_direct() {
-        assert_eq!(run_rfc_test_direct(0), 755224)
-    }
-
-    #[test]
-    fn rfc_test_case_2_direct() {
-        assert_eq!(run_rfc_test_direct(1), 287082)
-    }
-
-    #[test]
-    fn rfc_test_case_3_direct() {
-        assert_eq!(run_rfc_test_direct(2), 359152)
-    }
-
-    #[test]
-    fn rfc_test_case_4_direct() {
-        assert_eq!(run_rfc_test_direct(3), 969429)
-    }
-
-    #[test]
-    fn rfc_test_case_5_direct() {
-        assert_eq!(run_rfc_test_direct(4), 338314)
+        assert_eq!(run_rfc_test_direct(9), 520489)
     }
 }
