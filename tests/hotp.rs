@@ -1,3 +1,3 @@
-use rs_otp::hotp::HOTP;
+use xotp::hotp::HOTP;
 
 
