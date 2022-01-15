@@ -1,4 +1,3 @@
 pub mod hotp;
 pub mod totp;
-
-mod util;
+pub mod util;
