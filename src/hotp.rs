@@ -2,6 +2,7 @@
 
 use crate::util::{get_code, hash_generic, MacDigest};
 
+#[derive(Debug, Clone, Hash)]
 pub struct HOTP {
     secret: Vec<u8>,
 }

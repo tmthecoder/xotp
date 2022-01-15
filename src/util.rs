@@ -2,6 +2,7 @@ use hmac::{Hmac, Mac};
 use sha1::Sha1;
 use sha2::{Sha256, Sha512};
 
+#[derive(Debug, Copy, Clone, Hash)]
 pub enum MacDigest {
     SHA1,
     SHA256,

@@ -1,5 +1,11 @@
 [package]
 name = "xotp"
+description = "An easy-to-use library for HOTP and TOTP authentication"
+repository = "https://github.com/tmthecoder/xotp"
+readme = "README.md"
+license = "MIT"
+keywords = ["otp", "hotp", "totp"]
+categories = ["cryptography"]
 version = "0.1.0"
 edition = "2021"
 

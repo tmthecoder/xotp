@@ -1,5 +1,6 @@
 use crate::util::{get_code, hash_generic, MacDigest};
 
+#[derive(Debug, Clone, Hash)]
 pub struct TOTP {
     secret: Vec<u8>,
     mac_digest: MacDigest
