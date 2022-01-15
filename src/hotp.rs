@@ -1,6 +1,6 @@
 // Implementation of the HOTP standard according to RFC4226 by Tejas Mehta
 
-use crate::otp_shared::{get_code, hash_generic, MacDigest};
+use crate::util::{get_code, hash_generic, MacDigest};
 
 pub struct HOTP {
     secret: Vec<u8>,
