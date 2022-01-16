@@ -1,7 +1,7 @@
 // Implementation of the HOTP standard according to RFC4226 by Tejas Mehta
 
-use base32::Alphabet;
 use crate::util::{get_code, hash_generic, MacDigest};
+use base32::Alphabet;
 
 /// A HOTP Generator
 ///
@@ -35,9 +35,9 @@ impl HOTP {
     /// Since only SHA1 was specified in the reference implementation and
     /// RFC specification, there's no need to initialize with a digest object
     pub fn new(secret: &[u8]) -> Self {
-       HOTP {
-           secret: secret.to_vec()
-       }
+        HOTP {
+            secret: secret.to_vec(),
+        }
     }
 
     /// Creates a new HOTP instance from a utf8-encoded string secret
@@ -55,9 +55,8 @@ impl HOTP {
     /// This method panics if the provided string is not correctly base32
     /// encoded.
     pub fn from_base32(secret: &str) -> Self {
-        let decoded = base32::decode(
-            Alphabet::RFC4648 { padding: false }, secret
-        ).expect("Failed to decode base32 string");
+        let decoded = base32::decode(Alphabet::RFC4648 { padding: false }, secret)
+            .expect("Failed to decode base32 string");
         HOTP::new(&decoded)
     }
 }
@@ -72,12 +71,12 @@ impl HOTP {
     /// # Panics
     /// This method panics if the hash's secret is incorrectly given.
     pub fn get_otp(&self, counter: u64, digits: u32) -> u32 {
-
         let hash = hash_generic(&counter.to_be_bytes(), &self.secret, &MacDigest::SHA1);
-        let offset = (hash[hash.len()-1] & 0xf) as usize;
-        let bytes: [u8; 4] = hash[offset..offset + 4].try_into().expect("Failed byte get");
+        let offset = (hash[hash.len() - 1] & 0xf) as usize;
+        let bytes: [u8; 4] = hash[offset..offset + 4]
+            .try_into()
+            .expect("Failed byte get");
 
         get_code(bytes, digits)
     }
-
 }

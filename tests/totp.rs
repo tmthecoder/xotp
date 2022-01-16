@@ -1,5 +1,5 @@
-use xotp::util::MacDigest;
 use xotp::totp::TOTP;
+use xotp::util::MacDigest;
 
 // RFC6238 SHA1 Secret
 static SECRET_UTF8_SHA1: &str = "12345678901234567890";
@@ -31,7 +31,11 @@ fn run_rfc_test_bytes(time: u64) -> u32 {
 /// Generic test method to get the TOTP code with
 /// the given digest's Secret Key as a byte array
 fn run_rfc_test_bytes_with_digest(time: u64, digest: MacDigest) -> u32 {
-    let secret = if let MacDigest::SHA256 = digest { SECRET_BYTES_SHA256 } else { SECRET_BYTES_SHA512 };
+    let secret = if let MacDigest::SHA256 = digest {
+        SECRET_BYTES_SHA256
+    } else {
+        SECRET_BYTES_SHA512
+    };
     let totp = TOTP::new_with_digest(secret, digest);
     totp.get_otp(time, 8)
 }
@@ -46,7 +50,11 @@ fn run_rfc_test_utf8(time: u64) -> u32 {
 /// Generic test method to get the TOTP code with
 /// the given digest's Secret Key as a string literal
 fn run_rfc_test_utf8_with_digest(time: u64, digest: MacDigest) -> u32 {
-    let secret = if let MacDigest::SHA256 = digest { SECRET_UTF8_SHA256 } else { SECRET_UTF8_SHA512 };
+    let secret = if let MacDigest::SHA256 = digest {
+        SECRET_UTF8_SHA256
+    } else {
+        SECRET_UTF8_SHA512
+    };
     let totp = TOTP::from_utf8_with_digest(secret, digest);
     totp.get_otp(time, 8)
 }
@@ -61,12 +69,14 @@ fn run_rfc_test_base32(time: u64) -> u32 {
 /// Generic test method to get the TOTP code with
 /// the given digest's Secret Key as a base32-encoded string
 fn run_rfc_test_base32_with_digest(time: u64, digest: MacDigest) -> u32 {
-    let secret = if let MacDigest::SHA256 = digest { SECRET_BASE32_SHA256 } else { SECRET_BASE32_SHA512 };
+    let secret = if let MacDigest::SHA256 = digest {
+        SECRET_BASE32_SHA256
+    } else {
+        SECRET_BASE32_SHA512
+    };
     let totp = TOTP::from_base32_with_digest(secret, digest);
     totp.get_otp_with_custom(time, 30, 0, 8)
 }
-
-
 
 // All SHA-1 Tests for TOTP from RTC6238
 // Tests 1-2 ran with 'SECRET_BYTES_SHA1'
@@ -168,7 +178,8 @@ fn rtc_test_1_sha512() {
 fn rtc_test_2_sha512() {
     assert_eq!(
         run_rfc_test_bytes_with_digest(1111111109, MacDigest::SHA512),
-        25091201        )
+        25091201
+    )
 }
 
 // Tests 3-4 ran with 'SECRET_UTF8_SHA512'

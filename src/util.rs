@@ -16,7 +16,7 @@ use sha2::{Sha256, Sha512};
 pub enum MacDigest {
     SHA1,
     SHA256,
-    SHA512
+    SHA512,
 }
 
 /// A generic method to convert the [H/T]OTP byte-array into the
@@ -44,7 +44,7 @@ pub(crate) fn hash_generic(msg: &[u8], secret: &[u8], digest: &MacDigest) -> Vec
     match *digest {
         MacDigest::SHA1 => hash_internal::<Hmac<Sha1>>(msg, secret),
         MacDigest::SHA256 => hash_internal::<Hmac<Sha256>>(msg, secret),
-        MacDigest::SHA512 => hash_internal::<Hmac<Sha512>>(msg, secret)
+        MacDigest::SHA512 => hash_internal::<Hmac<Sha512>>(msg, secret),
     }
 }
 
@@ -58,9 +58,8 @@ pub(crate) fn hash_generic(msg: &[u8], secret: &[u8], digest: &MacDigest) -> Vec
 /// The method will panic if the provided secret is invalid and a hash
 /// cannot be generated
 
-fn hash_internal<D: Mac> (msg: &[u8], secret: &[u8]) -> Vec<u8> {
-    let mut hmac = <D>::new_from_slice(secret)
-        .expect("Failed to initialize HMAC");
+fn hash_internal<D: Mac>(msg: &[u8], secret: &[u8]) -> Vec<u8> {
+    let mut hmac = <D>::new_from_slice(secret).expect("Failed to initialize HMAC");
     hmac.update(msg);
     hmac.finalize().into_bytes()[..].into()
 }
