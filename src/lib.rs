@@ -5,7 +5,7 @@
 //!
 //! # Usage
 //!
-//! [`hotp::HOTP`] can be used in the following way:
+//! [HOTP](hotp::HOTP) can be used in the following way:
 //!
 //! ```rust
 //! use xotp::hotp::HOTP;
@@ -27,7 +27,7 @@
 //! }
 //! ```
 //!
-//! [`totp::TOTP`] can be used in the following way:
+//! [TOTP](totp::TOTP) can be used in the following way:
 //!
 //! ```rust
 //! use xotp::totp::TOTP;
