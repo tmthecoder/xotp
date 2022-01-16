@@ -17,7 +17,6 @@ impl HOTP {
     pub fn from_utf8(secret: &str) -> Self {
         HOTP::new(secret.as_bytes())
     }
-
 }
 
 impl HOTP {
