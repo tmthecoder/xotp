@@ -63,6 +63,10 @@
 //! }
 //! ```
 //!
+//! ## Changelog
+//!
+//! The changelog for this crate can be found at [CHANGELOG.md](https://github.com/tmthecoder/xotp/blob/main/CHANGELOG.md)
+//!
 //! # Licensing
 //!
 //! - xotp is licensed under the [MIT License]

@@ -74,6 +74,10 @@ fn get_otp_with_totp() {
 }
 ```
 
+## Changelog
+
+The changelog for this crate can be found at [CHANGELOG.md](https://github.com/tmthecoder/xotp/blob/main/CHANGELOG.md)
+
 ## Features and Bugs
 
 Please file any featre requests or bug reports through the [issue tracker]
