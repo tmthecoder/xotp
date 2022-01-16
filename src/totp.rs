@@ -21,7 +21,7 @@ pub struct TOTP {
     /// The secret key used in the HMAC process.
     ///
     /// Often given as a Base32 key, which can be conveniently initialize using
-    /// the [`TOTP::new_from_base32`] or [`TOTP::new_from_base32_with_digest`]
+    /// the [`TOTP::from_base32`] or [`TOTP::from_base32_with_digest`]
     /// initializers.
     secret: Vec<u8>,
 

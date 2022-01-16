@@ -22,7 +22,7 @@ pub struct HOTP {
     /// The secret key used in the HMAC process.
     ///
     /// Often given as a Base32 key, which can be conveniently initialize using
-    /// the [`HOTP::new_from_base32`] initializers
+    /// the [`HOTP::from_base32`] initializers
     secret: Vec<u8>,
 }
 
@@ -61,7 +61,7 @@ impl HOTP {
     }
 }
 
-/// All otp generation methods for the [`TOTP`] struct.
+/// All otp generation methods for the [`HOTP`] struct.
 
 impl HOTP {
     /// Generates and returns the HOTP value

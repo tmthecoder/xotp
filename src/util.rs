@@ -11,6 +11,8 @@ use sha2::{Sha256, Sha512};
 ///
 /// SHA1 is still primarily used, and some other authenticator applications
 /// may not support other digest algorithms.
+///
+/// [RFC6238]: https://datatracker.ietf.org/doc/html/rfc6238
 
 #[derive(Debug, Copy, Clone, Hash)]
 pub enum MacDigest {
