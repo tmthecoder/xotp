@@ -1,8 +1,10 @@
 //! An Rust implementation of the [HOTP] and [TOTP] algorithms
+//!
 //! - HOTP was implemented in accordance with [RFC4226]
 //! - TOTP was implemented in accordance with [RFC6238]
 //!
 //! # Usage
+//!
 //! [`hotp::HOTP`] can be used in the following way:
 //!
 //! ```rust
@@ -61,10 +63,16 @@
 //! }
 //! ```
 //!
+//! # Licensing
+//!
+//! - xotp is licensed under the [MIT License]
+//!
 //! [HOTP]: https://en.wikipedia.org/wiki/HMAC-based_one-time_password
 //! [TOTP]: https://en.wikipedia.org/wiki/Time-based_One-Time_Password
 //! [RFC4226]: https://datatracker.ietf.org/doc/html/rfc4226
 //! [RFC6238]: https://datatracker.ietf.org/doc/html/rfc6238
+//! [MIT License]: https://github.com/tmthecoder/xotp/blob/main/LICENSE
+
 pub mod hotp;
 pub mod totp;
 pub mod util;
