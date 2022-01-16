@@ -26,9 +26,9 @@ pub enum MacDigest {
 
 pub(crate) fn get_code(bytes: [u8; 4], digits: u32) -> u32 {
     let code = (((bytes[0] & 0x7f) as u32) << 24)
-        | (((bytes[1] & 0xff) as u32) << 16)
-        | (((bytes[2] & 0xff) as u32) << 8)
-        | (bytes[3] & 0xff) as u32;
+        | ((bytes[1] as u32) << 16)
+        | ((bytes[2] as u32) << 8)
+        | bytes[3] as u32;
     code % (10_u32.pow(digits))
 }
 
