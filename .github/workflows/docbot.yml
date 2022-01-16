@@ -27,7 +27,7 @@ jobs:
         git config user.email "docbot@github.com"
         if [ -d xotp/ ]; then rm -Rf xotp/; fi
         cp -R ../target/doc/ xotp/
-        ln -s xotp/xotp/index.html xotp/index.html
+        echo "<meta http-equiv=\"refresh\" content=\"0; url=build_wheel\">" > xotp/index.html
         git remote add secure-origin https://${{ secrets.ACCESS_TOKEN }}@github.com/tmthecoder/docs
         git add .
         git commit -m "Updated documentation for xotp" --allow-empty
