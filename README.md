@@ -1,5 +1,8 @@
 ## xotp
 
+[![xotp](https://github.com/tmthecoder/xotp/actions/workflows/xotp.yml/badge.svg)](https://github.com/tmthecoder/xotp/actions/workflows/xotp.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 A Rust implementation the [HOTP] and [TOTP] Algorithms.
 
 - HOTP was implemented in accordance with [RFC4226]
