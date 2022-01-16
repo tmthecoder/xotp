@@ -1,14 +1,18 @@
+use base32::Alphabet;
 use crate::util::{get_code, hash_generic, MacDigest};
 
 /// A TOTP generator
 ///
 /// Follows the specification listed in [RFC6238]. Needs a secret
-/// and digest algorithm on initialization, with other single code-specific
-/// items being provided when the [`TOTP::get_otp`] or [`TOTP::get_otp_with_custom`] is called.
+/// and digest algorithm on initialization, with other single
+/// generation-specific items being provided when the [`TOTP::get_otp`] or
+/// [`TOTP::get_otp_with_custom`] is called.
 ///
 /// # Example
 /// See the top-level README for an example of TOTP usage
-/// In addition to the example, all other initialization methods can be utilized in a similar manner.
+///
+/// In addition to the example, all other initialization methods can be
+/// utilized in a similar manner.
 ///
 /// [RFC6238]: https://datatracker.ietf.org/doc/html/rfc6238
 
@@ -20,6 +24,7 @@ pub struct TOTP {
     /// the [`TOTP::new_from_base32`] or [`TOTP::new_from_base32_with_digest`]
     /// initializers.
     secret: Vec<u8>,
+
     /// The digest to use in the HMAC process.
     ///
     /// Unless an initializer ending in 'with_digest' is used, this value
@@ -49,20 +54,46 @@ impl TOTP {
         }
     }
 
-    /// Creates a new TOTP instance from a utf8 string-represented secret key
+    /// Creates a new TOTP instance from a utf8-encoded string secret
     ///
     /// Like [`TOTP::new`], this method also defaults to using [`MacDigest::SHA1`]
     /// for HMAC operations.
     pub fn from_utf8(secret: &str) -> Self {
-       TOTP::new(secret.as_bytes())
+       TOTP::from_utf8_with_digest(secret, MacDigest::SHA1)
     }
 
-    /// Creates a new TOTP instance from a utf8 string-represented secret key
+    /// Creates a new TOTP instance from a utf8-encoded string secret
     ///
     /// Like [`TOTP::new_with_digest`], this method allows a digest to be specified
     /// instead of the default SHA1 being used.
     pub fn from_utf8_with_digest(secret: &str, mac_digest: MacDigest) -> Self {
         TOTP::new_with_digest(secret.as_bytes(), mac_digest)
+    }
+
+    /// Creates a new TOTP instance from a base32-encoded string secret
+    ///
+    /// Like [`TOTP::new`] and [`TOTP::from_utf8`] this method also defaults
+    /// to using [`MacDigest::SHA1`] for HMAC operations.
+    ///
+    /// # Panics
+    /// This method panics if the [`TOTP::from_base32_with_digest`] does,
+    /// which happens when the provided string is not correctly base32 encoded.
+    pub fn from_base32(secret: &str) -> Self {
+        TOTP::from_base32_with_digest(secret, MacDigest::SHA1)
+    }
+
+    /// Creates a new TOTP instance from a base32-encoded string secret
+    ///
+    /// Like [`TOTP::new_with_digest`] and [`TOTP::from_utf8_with_digest`] this
+    /// method allows a digest to be specified instead of the default SHA1.
+    ///
+    /// # Panics
+    /// This method panics if the provided string is not correctly base32 encoded.
+    pub fn from_base32_with_digest(secret: &str, mac_digest: MacDigest) -> Self {
+        let decoded = base32::decode(
+            Alphabet::RFC4648 { padding: false }, secret
+        ).expect("Failed to decode base32 string");
+        TOTP::new_with_digest(&decoded, mac_digest)
     }
 }
 
