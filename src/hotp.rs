@@ -27,6 +27,7 @@ pub struct HOTP {
 }
 
 /// All initializer implementations for the [`HOTP`] struct.
+
 impl HOTP {
     /// Creates a new HOTP instance with a byte-array representation
     /// of the secret
@@ -62,6 +63,7 @@ impl HOTP {
 }
 
 /// All otp generation methods for the [`TOTP`] struct.
+
 impl HOTP {
     /// Generates and returns the HOTP value
     ///
