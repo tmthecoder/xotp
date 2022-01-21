@@ -1,5 +1,4 @@
-use crate::util::{get_code, hash_generic, MacDigest};
-use base32::Alphabet;
+use crate::util::{base32_decode, get_code, hash_generic, MacDigest};
 
 /// A TOTP generator
 ///
@@ -30,28 +29,38 @@ pub struct TOTP {
     /// Unless an initializer ending in 'with_digest' is used, this value
     /// defaults to [`MacDigest::SHA1`]
     mac_digest: MacDigest,
+
+    digits: u32,
+
+    period: u64,
 }
 
 /// All initializer implementations for the [`TOTP`] struct
 impl TOTP {
+    pub fn new(secret: &[u8], mac_digest: MacDigest, digits: u32, period: u64) -> Self {
+        TOTP {
+            secret: secret.to_vec(),
+            mac_digest,
+            digits,
+            period,
+        }
+    }
+
     /// Creates a new TOTP instance with a byte-array representation
     /// of the secret
     ///
     /// Defaults to using [`MacDigest::SHA1`] as the digest for HMAC
     /// operations.
-    pub fn new(secret: &[u8]) -> Self {
-        TOTP::new_with_digest(secret, MacDigest::SHA1)
+    pub fn from_secret(secret: &[u8]) -> Self {
+        TOTP::from_secret_with_digest(secret, MacDigest::SHA1)
     }
 
     /// Creates a new TOTP instance with a byte-array representation
     /// of the secret and a specific digest for HMAC operations
     ///
     /// Allows for non-SHA1 algorithms to be used with TOTP generation
-    pub fn new_with_digest(secret: &[u8], mac_digest: MacDigest) -> Self {
-        TOTP {
-            secret: secret.to_vec(),
-            mac_digest,
-        }
+    pub fn from_secret_with_digest(secret: &[u8], mac_digest: MacDigest) -> Self {
+        TOTP::new(secret, mac_digest, 6, 30)
     }
 
     /// Creates a new TOTP instance from a utf8-encoded string secret
@@ -67,7 +76,7 @@ impl TOTP {
     /// Like [`TOTP::new_with_digest`], this method allows a digest to be specified
     /// instead of the default SHA1 being used.
     pub fn from_utf8_with_digest(secret: &str, mac_digest: MacDigest) -> Self {
-        TOTP::new_with_digest(secret.as_bytes(), mac_digest)
+        TOTP::from_secret_with_digest(secret.as_bytes(), mac_digest)
     }
 
     /// Creates a new TOTP instance from a base32-encoded string secret
@@ -90,9 +99,22 @@ impl TOTP {
     /// # Panics
     /// This method panics if the provided string is not correctly base32 encoded.
     pub fn from_base32_with_digest(secret: &str, mac_digest: MacDigest) -> Self {
-        let decoded = base32::decode(Alphabet::RFC4648 { padding: false }, secret)
-            .expect("Failed to decode base32 string");
-        TOTP::new_with_digest(&decoded, mac_digest)
+        let decoded = base32_decode(secret).expect("Failed to decode base32 string");
+        TOTP::from_secret_with_digest(&decoded, mac_digest)
+    }
+}
+
+impl TOTP {
+    pub fn get_digest(&self) -> MacDigest {
+        self.mac_digest
+    }
+
+    pub fn get_digits(&self) -> u32 {
+        self.digits
+    }
+
+    pub fn get_period(&self) -> u64 {
+        self.period
     }
 }
 
@@ -111,8 +133,8 @@ impl TOTP {
     /// # Panics
     /// This method panics if the called [`TOTP::get_otp_with_custom`] method
     /// does, which would happen if the hash's secret is incorrectly given.
-    pub fn get_otp(&self, time: u64, digits: u32) -> u32 {
-        self.get_otp_with_custom(time, 30, 0, digits)
+    pub fn get_otp(&self, time: u64) -> u32 {
+        self.get_otp_with_custom_time_start(time, 0)
     }
 
     /// Generates and returns the TOTP value for the time with a provided step,
@@ -125,14 +147,8 @@ impl TOTP {
     ///
     /// # Panics
     /// This method panics if the hash's secret is incorrectly given.
-    pub fn get_otp_with_custom(
-        &self,
-        time: u64,
-        time_step: u64,
-        time_start: u64,
-        digits: u32,
-    ) -> u32 {
-        let time_count = (time - time_start) / time_step;
+    pub fn get_otp_with_custom_time_start(&self, time: u64, time_start: u64) -> u32 {
+        let time_count = (time - time_start) / self.period;
 
         let hash = hash_generic(&time_count.to_be_bytes(), &self.secret, &self.mac_digest);
         let offset = (hash[hash.len() - 1] & 0xf) as usize;
@@ -140,6 +156,6 @@ impl TOTP {
             .try_into()
             .expect("Failed byte get");
 
-        get_code(bytes, digits)
+        get_code(bytes, self.digits)
     }
 }

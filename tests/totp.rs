@@ -6,7 +6,7 @@ static SECRET_UTF8_SHA1: &str = "12345678901234567890";
 static SECRET_BYTES_SHA1: &[u8] = SECRET_UTF8_SHA1.as_bytes();
 static SECRET_BASE32_SHA1: &str = "GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ";
 
-//RTC6238 SHA256 Secret
+// RTC6238 SHA256 Secret
 static SECRET_UTF8_SHA256: &str = "12345678901234567890\
         123456789012";
 static SECRET_BYTES_SHA256: &[u8] = SECRET_UTF8_SHA256.as_bytes();
@@ -24,8 +24,8 @@ static SECRET_BASE32_SHA512: &str = "GEZDGNBVGY3TQOJQGEZ\
 /// Generic test method to get the TOTP code with
 /// the SHA1 Secret Key as a byte array
 fn run_rfc_test_bytes(time: u64) -> u32 {
-    let totp = TOTP::new(SECRET_BYTES_SHA1);
-    totp.get_otp_with_custom(time, 30, 0, 8)
+    let totp = TOTP::from_secret(SECRET_BYTES_SHA1);
+    totp.get_otp(time)
 }
 
 /// Generic test method to get the TOTP code with
@@ -36,15 +36,15 @@ fn run_rfc_test_bytes_with_digest(time: u64, digest: MacDigest) -> u32 {
     } else {
         SECRET_BYTES_SHA512
     };
-    let totp = TOTP::new_with_digest(secret, digest);
-    totp.get_otp(time, 8)
+    let totp = TOTP::from_secret_with_digest(secret, digest);
+    totp.get_otp(time)
 }
 
 /// Generic test method to get the TOTP code with
 /// the SHA1 Secret Key as a string literal
 fn run_rfc_test_utf8(time: u64) -> u32 {
     let totp = TOTP::from_utf8(SECRET_UTF8_SHA1);
-    totp.get_otp_with_custom(time, 30, 0, 8)
+    totp.get_otp(time)
 }
 
 /// Generic test method to get the TOTP code with
@@ -56,14 +56,14 @@ fn run_rfc_test_utf8_with_digest(time: u64, digest: MacDigest) -> u32 {
         SECRET_UTF8_SHA512
     };
     let totp = TOTP::from_utf8_with_digest(secret, digest);
-    totp.get_otp(time, 8)
+    totp.get_otp(time)
 }
 
 /// Generic test method to get the TOTP code with
 /// the SHA1 Secret Key as a base32-encoded string
 fn run_rfc_test_base32(time: u64) -> u32 {
     let totp = TOTP::from_base32(SECRET_BASE32_SHA1);
-    totp.get_otp(time, 8)
+    totp.get_otp(time)
 }
 
 /// Generic test method to get the TOTP code with
@@ -75,7 +75,7 @@ fn run_rfc_test_base32_with_digest(time: u64, digest: MacDigest) -> u32 {
         SECRET_BASE32_SHA512
     };
     let totp = TOTP::from_base32_with_digest(secret, digest);
-    totp.get_otp_with_custom(time, 30, 0, 8)
+    totp.get_otp(time)
 }
 
 // All SHA-1 Tests for TOTP from RTC6238

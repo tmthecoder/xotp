@@ -1,6 +1,12 @@
+use base32::Alphabet;
 use hmac::{Hmac, Mac};
 use sha1::Sha1;
 use sha2::{Sha256, Sha512};
+use std::collections::HashMap;
+use url::Url;
+
+use crate::hotp::HOTP;
+use crate::totp::TOTP;
 
 /// The digest to use with TOTP
 ///
@@ -13,8 +19,7 @@ use sha2::{Sha256, Sha512};
 /// may not support other digest algorithms.
 ///
 /// [RFC6238]: https://datatracker.ietf.org/doc/html/rfc6238
-
-#[derive(Debug, Copy, Clone, Hash)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
 pub enum MacDigest {
     SHA1,
     SHA256,
@@ -64,4 +69,112 @@ fn hash_internal<D: Mac>(msg: &[u8], secret: &[u8]) -> Vec<u8> {
     let mut hmac = <D>::new_from_slice(secret).expect("Failed to initialize HMAC");
     hmac.update(msg);
     hmac.finalize().into_bytes()[..].into()
+}
+
+pub(crate) fn base32_decode(data: &str) -> Option<Vec<u8>> {
+    base32::decode(Alphabet::RFC4648 { padding: false }, data)
+}
+
+#[derive(Debug)]
+pub enum ParseResult {
+    TOTP(TOTP),
+    HOTP(HOTP, u64),
+}
+
+#[derive(Debug)]
+pub enum ParseError {
+    UriParseError(url::ParseError),
+    WrongScheme(String),
+    MissingOtpType,
+    UnknownOtpType(String),
+    MissingSecret,
+    SecretParsingError(String),
+    UnknownAlgorithm(String),
+    WrongDigitNumber(String),
+    MissingCounter,
+    WrongCounter(String),
+    InvalidPeriod(String),
+}
+
+pub fn parse_otpauth_uri(uri: &str) -> Result<ParseResult, ParseError> {
+    use ParseError::*;
+
+    let parsed_uri = Url::parse(uri);
+    if parsed_uri.is_err() {
+        return Err(UriParseError(parsed_uri.unwrap_err()));
+    }
+    let parsed_uri = parsed_uri.unwrap();
+
+    if !parsed_uri.scheme().eq("otpauth") {
+        return Err(WrongScheme(String::from(parsed_uri.scheme())));
+    }
+
+    let query: HashMap<_, _> = parsed_uri.query_pairs().collect();
+
+    let secret = match query.get("secret") {
+        Some(x) => match base32_decode(x) {
+            None => return Err(SecretParsingError(String::from(x.as_ref()))),
+            Some(x) => x,
+        },
+        None => return Err(MissingSecret),
+    };
+
+    let digits = match query.get("digits") {
+        Some(x) => match x.parse::<u32>() {
+            Ok(i) => {
+                if i == 0 {
+                    return Err(WrongDigitNumber(String::from(x.as_ref())));
+                } else {
+                    i
+                }
+            }
+            Err(_) => return Err(WrongDigitNumber(String::from(x.as_ref()))),
+        },
+        None => 6,
+    };
+
+    let type_str = match parsed_uri.host_str() {
+        Some(x) => x,
+        None => return Err(MissingOtpType),
+    };
+
+    if type_str.eq("totp") {
+        let algo = match query.get("algorithm") {
+            Some(x) => match x.as_ref() {
+                "SHA1" => MacDigest::SHA1,
+                "SHA256" => MacDigest::SHA256,
+                "SHA512" => MacDigest::SHA512,
+                _ => return Err(UnknownAlgorithm(String::from(x.as_ref()))),
+            },
+            None => MacDigest::SHA1,
+        };
+
+        let period = match query.get("period") {
+            Some(x) => match x.parse::<u64>() {
+                Ok(i) => {
+                    if i == 0 {
+                        return Err(InvalidPeriod(String::from(x.as_ref())));
+                    } else {
+                        i
+                    }
+                }
+                Err(_) => return Err(InvalidPeriod(String::from(x.as_ref()))),
+            },
+            None => 30,
+        };
+
+        Ok(ParseResult::TOTP(TOTP::new(&secret, algo, digits, period)))
+    } else if type_str.eq("hotp") {
+        let counter = match query.get("counter") {
+            Some(x) => match x.parse::<u64>() {
+                Ok(x) => x,
+                Err(_) => return Err(WrongCounter(String::from(x.as_ref()))),
+            },
+            None => return Err(MissingCounter),
+        };
+
+        Ok(ParseResult::HOTP(HOTP::new(&secret, digits), counter))
+    } else {
+        Err(UnknownOtpType(String::from(type_str)))
+    }
 }

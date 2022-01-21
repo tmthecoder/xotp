@@ -1,7 +1,6 @@
 // Implementation of the HOTP standard according to RFC4226 by Tejas Mehta
 
-use crate::util::{get_code, hash_generic, MacDigest};
-use base32::Alphabet;
+use crate::util::{base32_decode, get_code, hash_generic, MacDigest};
 
 /// A HOTP Generator
 ///
@@ -24,19 +23,21 @@ pub struct HOTP {
     /// Often given as a Base32 key, which can be conveniently initialize using
     /// the [`HOTP::from_base32`] initializers
     secret: Vec<u8>,
+
+    digits: u32,
 }
 
 /// All initializer implementations for the [`HOTP`] struct.
-
 impl HOTP {
     /// Creates a new HOTP instance with a byte-array representation
     /// of the secret
     ///
     /// Since only SHA1 was specified in the reference implementation and
     /// RFC specification, there's no need to initialize with a digest object
-    pub fn new(secret: &[u8]) -> Self {
+    pub fn new(secret: &[u8], digits: u32) -> Self {
         HOTP {
             secret: secret.to_vec(),
+            digits,
         }
     }
 
@@ -44,7 +45,7 @@ impl HOTP {
     ///
     /// Internally calls [`HOTP::new`] with the string's byte representation
     pub fn from_utf8(secret: &str) -> Self {
-        HOTP::new(secret.as_bytes())
+        HOTP::new(secret.as_bytes(), 6)
     }
 
     /// Creates a new HOTP instance from a base32-encoded string secret
@@ -55,14 +56,18 @@ impl HOTP {
     /// This method panics if the provided string is not correctly base32
     /// encoded.
     pub fn from_base32(secret: &str) -> Self {
-        let decoded = base32::decode(Alphabet::RFC4648 { padding: false }, secret)
-            .expect("Failed to decode base32 string");
-        HOTP::new(&decoded)
+        let decoded = base32_decode(secret).expect("Failed to decode base32 string");
+        HOTP::new(&decoded, 6)
+    }
+}
+
+impl HOTP {
+    pub fn get_digits(&self) -> u32 {
+        self.digits
     }
 }
 
 /// All otp generation methods for the [`HOTP`] struct.
-
 impl HOTP {
     /// Generates and returns the HOTP value
     ///
@@ -70,13 +75,13 @@ impl HOTP {
     ///
     /// # Panics
     /// This method panics if the hash's secret is incorrectly given.
-    pub fn get_otp(&self, counter: u64, digits: u32) -> u32 {
+    pub fn get_otp(&self, counter: u64) -> u32 {
         let hash = hash_generic(&counter.to_be_bytes(), &self.secret, &MacDigest::SHA1);
         let offset = (hash[hash.len() - 1] & 0xf) as usize;
         let bytes: [u8; 4] = hash[offset..offset + 4]
             .try_into()
             .expect("Failed byte get");
 
-        get_code(bytes, digits)
+        get_code(bytes, self.digits)
     }
 }
