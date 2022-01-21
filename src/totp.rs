@@ -46,6 +46,15 @@ impl TOTP {
         }
     }
 
+    pub fn new_from_utf8(secret: &str, mac_digest: MacDigest, digits: u32, period: u64) -> Self {
+        TOTP::new(secret.as_bytes(), mac_digest, digits, period)
+    }
+
+    pub fn new_from_base32(secret: &str, mac_digest: MacDigest, digits: u32, period: u64) -> Self {
+        let decoded = base32_decode(secret).expect("Failed to decode base32 string");
+        TOTP::new(&decoded, mac_digest, digits, period)
+    }
+
     /// Creates a new TOTP instance with a byte-array representation
     /// of the secret
     ///
@@ -76,7 +85,7 @@ impl TOTP {
     /// Like [`TOTP::new_with_digest`], this method allows a digest to be specified
     /// instead of the default SHA1 being used.
     pub fn from_utf8_with_digest(secret: &str, mac_digest: MacDigest) -> Self {
-        TOTP::from_secret_with_digest(secret.as_bytes(), mac_digest)
+        TOTP::new_from_utf8(secret, mac_digest, 6, 30)
     }
 
     /// Creates a new TOTP instance from a base32-encoded string secret
@@ -99,8 +108,7 @@ impl TOTP {
     /// # Panics
     /// This method panics if the provided string is not correctly base32 encoded.
     pub fn from_base32_with_digest(secret: &str, mac_digest: MacDigest) -> Self {
-        let decoded = base32_decode(secret).expect("Failed to decode base32 string");
-        TOTP::from_secret_with_digest(&decoded, mac_digest)
+        TOTP::new_from_base32(secret, mac_digest, 6, 30)
     }
 }
 

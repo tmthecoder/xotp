@@ -24,7 +24,7 @@ static SECRET_BASE32_SHA512: &str = "GEZDGNBVGY3TQOJQGEZ\
 /// Generic test method to get the TOTP code with
 /// the SHA1 Secret Key as a byte array
 fn run_rfc_test_bytes(time: u64) -> u32 {
-    let totp = TOTP::from_secret(SECRET_BYTES_SHA1);
+    let totp = TOTP::new(SECRET_BYTES_SHA1, MacDigest::SHA1, 8, 30);
     totp.get_otp(time)
 }
 
@@ -36,14 +36,14 @@ fn run_rfc_test_bytes_with_digest(time: u64, digest: MacDigest) -> u32 {
     } else {
         SECRET_BYTES_SHA512
     };
-    let totp = TOTP::from_secret_with_digest(secret, digest);
+    let totp = TOTP::new(secret, digest, 8, 30);
     totp.get_otp(time)
 }
 
 /// Generic test method to get the TOTP code with
 /// the SHA1 Secret Key as a string literal
 fn run_rfc_test_utf8(time: u64) -> u32 {
-    let totp = TOTP::from_utf8(SECRET_UTF8_SHA1);
+    let totp = TOTP::new_from_utf8(SECRET_UTF8_SHA1, MacDigest::SHA1, 8, 30);
     totp.get_otp(time)
 }
 
@@ -55,14 +55,14 @@ fn run_rfc_test_utf8_with_digest(time: u64, digest: MacDigest) -> u32 {
     } else {
         SECRET_UTF8_SHA512
     };
-    let totp = TOTP::from_utf8_with_digest(secret, digest);
+    let totp = TOTP::new_from_utf8(secret, digest, 8, 30);
     totp.get_otp(time)
 }
 
 /// Generic test method to get the TOTP code with
 /// the SHA1 Secret Key as a base32-encoded string
 fn run_rfc_test_base32(time: u64) -> u32 {
-    let totp = TOTP::from_base32(SECRET_BASE32_SHA1);
+    let totp = TOTP::new_from_base32(SECRET_BASE32_SHA1, MacDigest::SHA1, 8, 30);
     totp.get_otp(time)
 }
 
@@ -74,7 +74,7 @@ fn run_rfc_test_base32_with_digest(time: u64, digest: MacDigest) -> u32 {
     } else {
         SECRET_BASE32_SHA512
     };
-    let totp = TOTP::from_base32_with_digest(secret, digest);
+    let totp = TOTP::new_from_base32(secret, digest, 8, 30);
     totp.get_otp(time)
 }
 

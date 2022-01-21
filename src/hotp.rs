@@ -41,11 +41,20 @@ impl HOTP {
         }
     }
 
+    pub fn new_from_utf8(secret: &str, digits: u32) -> Self {
+        HOTP::new(secret.as_bytes(), digits)
+    }
+
+    pub fn new_from_base32(secret: &str, digits: u32) -> Self {
+        let decoded = base32_decode(secret).expect("Failed to decode base32 string");
+        HOTP::new(&decoded, digits)
+    }
+
     /// Creates a new HOTP instance from a utf8-encoded string secret
     ///
     /// Internally calls [`HOTP::new`] with the string's byte representation
     pub fn from_utf8(secret: &str) -> Self {
-        HOTP::new(secret.as_bytes(), 6)
+        HOTP::new_from_utf8(secret, 6)
     }
 
     /// Creates a new HOTP instance from a base32-encoded string secret
@@ -56,8 +65,7 @@ impl HOTP {
     /// This method panics if the provided string is not correctly base32
     /// encoded.
     pub fn from_base32(secret: &str) -> Self {
-        let decoded = base32_decode(secret).expect("Failed to decode base32 string");
-        HOTP::new(&decoded, 6)
+        HOTP::new_from_base32(secret, 6)
     }
 }
 
