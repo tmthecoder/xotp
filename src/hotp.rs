@@ -18,6 +18,7 @@ use base32::Alphabet;
 /// [RFC4226]: https://datatracker.ietf.org/doc/html/rfc4226
 
 #[derive(Debug, Clone, Hash)]
+#[cfg_attr(feature = "ffi", repr(C))]
 pub struct HOTP {
     /// The secret key used in the HMAC process.
     ///

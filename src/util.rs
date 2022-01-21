@@ -15,6 +15,7 @@ use sha2::{Sha256, Sha512};
 /// [RFC6238]: https://datatracker.ietf.org/doc/html/rfc6238
 
 #[derive(Debug, Copy, Clone, Hash)]
+#[cfg_attr(feature = "ffi", repr(C))]
 pub enum MacDigest {
     SHA1,
     SHA256,
