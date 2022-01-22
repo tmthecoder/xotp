@@ -2,10 +2,10 @@ use crate::util::{base32_decode, get_code, hash_generic, MacDigest};
 
 /// A TOTP generator
 ///
-/// Follows the specification listed in [RFC6238]. Needs a secret
-/// and digest algorithm on initialization, with other single
-/// generation-specific items being provided when the [`TOTP::get_otp`] or
-/// [`TOTP::get_otp_with_custom`] is called.
+/// Follows the specification listed in [RFC6238]. Needs a secret,
+/// a digest algorithm, a number of digits and a period on initialization.
+/// The TOTP can then be generated using [`TOTP::get_otp`] or
+/// [`TOTP::get_otp_with_custom_time_start`].
 ///
 /// # Example
 /// See the top-level README for an example of TOTP usage
@@ -14,28 +14,31 @@ use crate::util::{base32_decode, get_code, hash_generic, MacDigest};
 /// utilized in a similar manner.
 ///
 /// [RFC6238]: https://datatracker.ietf.org/doc/html/rfc6238
-
 #[derive(Debug, Clone, Hash)]
 pub struct TOTP {
     /// The secret key used in the HMAC process.
     ///
-    /// Often given as a Base32 key, which can be conveniently initialize using
-    /// the [`TOTP::from_base32`] or [`TOTP::from_base32_with_digest`]
-    /// initializers.
+    /// Often given as a Base32 key, which can be conveniently initialized using
+    /// [`TOTP::from_base32`] constructors.
     secret: Vec<u8>,
 
     /// The digest to use in the HMAC process.
     ///
-    /// Unless an initializer ending in 'with_digest' is used, this value
-    /// defaults to [`MacDigest::SHA1`]
+    /// This value defaults to [`MacDigest::SHA1`] if not specified in a constructor.
     mac_digest: MacDigest,
 
+    /// The number of digits of the code generated.
+    ///
+    /// This value defaults to 6 if not specified in a constructor.
     digits: u32,
 
+    /// The period in seconds between two different generated code.
+    ///
+    /// This value defaults to 30 if not specified in a constructor.
     period: u64,
 }
 
-/// All initializer implementations for the [`TOTP`] struct
+// All initializer implementations for the [`TOTP`] struct
 impl TOTP {
     pub fn new(secret: &[u8], mac_digest: MacDigest, digits: u32, period: u64) -> Self {
         TOTP {
@@ -112,21 +115,25 @@ impl TOTP {
     }
 }
 
+// All getters
 impl TOTP {
+    /// Gets the algorithm used for code generation.
     pub fn get_digest(&self) -> MacDigest {
         self.mac_digest
     }
 
+    /// Gets the number of digits of the code.
     pub fn get_digits(&self) -> u32 {
         self.digits
     }
 
+    /// Gets the period between different generated code.
     pub fn get_period(&self) -> u64 {
         self.period
     }
 }
 
-/// All otp generation methods for the [`TOTP`] struct.
+// All otp generation methods for the [`TOTP`] struct.
 impl TOTP {
     /// Generates and returns the TOTP value for the time with the
     /// specified digits.

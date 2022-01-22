@@ -8,7 +8,7 @@ use url::Url;
 use crate::hotp::HOTP;
 use crate::totp::TOTP;
 
-/// The digest to use with TOTP
+/// The digest to use with TOTP.
 ///
 /// All three digests referenced in [RFC6238] are supported:
 /// - SHA1
@@ -27,10 +27,9 @@ pub enum MacDigest {
 }
 
 /// A generic method to convert the [H/T]OTP byte-array into the
-/// requested decimal-based code
+/// requested decimal-based code.
 ///
-/// Needs the bytes to convert and the amount of digits the code should be
-
+/// Needs the bytes to convert and the amount of digits the code should be.
 pub(crate) fn get_code(bytes: [u8; 4], digits: u32) -> u32 {
     let code = (((bytes[0] & 0x7f) as u32) << 24)
         | ((bytes[1] as u32) << 16)
@@ -42,11 +41,10 @@ pub(crate) fn get_code(bytes: [u8; 4], digits: u32) -> u32 {
 /// A method to hash a message with a given secret and digest.
 ///
 /// The only time [`MacDigest`] is not [`MacDigest::SHA1`] is when the
-/// TOTP instance's mac_digest is set otherwise
+/// TOTP instance's mac_digest is set otherwise.
 ///
 /// Calls the underlying [`hash_internal`] function with the correctly
 /// HMAC-mapped algorithm.
-
 pub(crate) fn hash_generic(msg: &[u8], secret: &[u8], digest: &MacDigest) -> Vec<u8> {
     match *digest {
         MacDigest::SHA1 => hash_internal::<Hmac<Sha1>>(msg, secret),
@@ -55,32 +53,36 @@ pub(crate) fn hash_generic(msg: &[u8], secret: &[u8], digest: &MacDigest) -> Vec
     }
 }
 
-/// A generic method to HMAC a message using the given type
+/// A generic method to HMAC a message using the given type.
 ///
 /// This is mainly a private method made for added convenience and code
 /// readability to reduce the duplicate code with different
-/// underlying digests
+/// underlying digests.
 ///
 /// # Panics
 /// The method will panic if the provided secret is invalid and a hash
-/// cannot be generated
-
+/// cannot be generated.
 fn hash_internal<D: Mac>(msg: &[u8], secret: &[u8]) -> Vec<u8> {
     let mut hmac = <D>::new_from_slice(secret).expect("Failed to initialize HMAC");
     hmac.update(msg);
     hmac.finalize().into_bytes()[..].into()
 }
 
+/// Decodes a base32 string according to RFC4648.
 pub(crate) fn base32_decode(data: &str) -> Option<Vec<u8>> {
     base32::decode(Alphabet::RFC4648 { padding: false }, data)
 }
 
+/// Result of an otpauth URI parsing.
+///
+/// It's either a TOTP or a HOTP with its current counter.
 #[derive(Debug)]
 pub enum ParseResult {
     TOTP(TOTP),
     HOTP(HOTP, u64),
 }
 
+/// Different error types of the optauth URI parsing.
 #[derive(Debug)]
 pub enum ParseError {
     UriParseError(url::ParseError),
@@ -96,6 +98,8 @@ pub enum ParseError {
     InvalidPeriod(String),
 }
 
+/// Parses an otpauth URI, which is the string format of the QR codes usually given by platforms for TOTP.
+/// This method is safe and shouldn't panic.
 pub fn parse_otpauth_uri(uri: &str) -> Result<ParseResult, ParseError> {
     use ParseError::*;
 
