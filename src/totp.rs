@@ -40,6 +40,8 @@ pub struct TOTP {
 
 // All initializer implementations for the [`TOTP`] struct
 impl TOTP {
+    /// Generates a new TOTP instance from a byte array representation of the secret,
+    /// a digest algorithm, a number of digits and a period in seconds.
     pub fn new(secret: &[u8], mac_digest: MacDigest, digits: u32, period: u64) -> Self {
         TOTP {
             secret: secret.to_vec(),
@@ -49,64 +51,69 @@ impl TOTP {
         }
     }
 
+    /// Generates a new TOTP instance from an utf8 representation of the secret,
+    /// a digest algorithm, a number of digits and a period in seconds.
     pub fn new_from_utf8(secret: &str, mac_digest: MacDigest, digits: u32, period: u64) -> Self {
         TOTP::new(secret.as_bytes(), mac_digest, digits, period)
     }
 
+    /// Generates a new TOTP instance from a base32 representation of the secret,
+    /// a digest algorithm, a number of digits and a period in seconds.
+    ///
+    /// # Panics
+    /// This method panics if the provided string is not correctly base32 encoded.
     pub fn new_from_base32(secret: &str, mac_digest: MacDigest, digits: u32, period: u64) -> Self {
         let decoded = base32_decode(secret).expect("Failed to decode base32 string");
         TOTP::new(&decoded, mac_digest, digits, period)
     }
 
-    /// Creates a new TOTP instance with a byte-array representation
-    /// of the secret
+    /// Creates a new TOTP instance with a byte-array representation of the secret.
     ///
-    /// Defaults to using [`MacDigest::SHA1`] as the digest for HMAC
-    /// operations.
+    /// Defaults to using [`MacDigest::SHA1`] as the digest for HMAC operations,
+    /// 6 digits and a 30 seconds period.
     pub fn from_secret(secret: &[u8]) -> Self {
         TOTP::from_secret_with_digest(secret, MacDigest::SHA1)
     }
 
-    /// Creates a new TOTP instance with a byte-array representation
-    /// of the secret and a specific digest for HMAC operations
+    /// Creates a new TOTP instance with a byte-array representation of the secret and
+    /// a digest algorithm.
     ///
-    /// Allows for non-SHA1 algorithms to be used with TOTP generation
+    /// Defaults to using 6 digits and a 30 seconds period.
     pub fn from_secret_with_digest(secret: &[u8], mac_digest: MacDigest) -> Self {
         TOTP::new(secret, mac_digest, 6, 30)
     }
 
-    /// Creates a new TOTP instance from a utf8-encoded string secret
+    /// Creates a new TOTP instance with an utf8 representation of the secret.
     ///
-    /// Like [`TOTP::new`], this method also defaults to using [`MacDigest::SHA1`]
-    /// for HMAC operations.
+    /// Defaults to using [`MacDigest::SHA1`] as the digest for HMAC operations,
+    /// 6 digits and a 30 seconds period.
     pub fn from_utf8(secret: &str) -> Self {
         TOTP::from_utf8_with_digest(secret, MacDigest::SHA1)
     }
 
-    /// Creates a new TOTP instance from a utf8-encoded string secret
+    /// Creates a new TOTP instance with an utf8 representation of the secret and
+    /// a digest algorithm.
     ///
-    /// Like [`TOTP::new_with_digest`], this method allows a digest to be specified
-    /// instead of the default SHA1 being used.
+    /// Defaults to using 6 digits and a 30 seconds period.
     pub fn from_utf8_with_digest(secret: &str, mac_digest: MacDigest) -> Self {
         TOTP::new_from_utf8(secret, mac_digest, 6, 30)
     }
 
-    /// Creates a new TOTP instance from a base32-encoded string secret
+    /// Creates a new TOTP instance with a base32 representation of the secret.
     ///
-    /// Like [`TOTP::new`] and [`TOTP::from_utf8`] this method also defaults
-    /// to using [`MacDigest::SHA1`] for HMAC operations.
+    /// Defaults to using [`MacDigest::SHA1`] as the digest for HMAC operations,
+    /// 6 digits and a 30 seconds period.
     ///
     /// # Panics
-    /// This method panics if the [`TOTP::from_base32_with_digest`] does,
-    /// which happens when the provided string is not correctly base32 encoded.
+    /// This method panics if the provided string is not correctly base32 encoded.
     pub fn from_base32(secret: &str) -> Self {
         TOTP::from_base32_with_digest(secret, MacDigest::SHA1)
     }
 
-    /// Creates a new TOTP instance from a base32-encoded string secret
+    /// Creates a new TOTP instance with a base32 representation of the secret and
+    /// a digest algorithm.
     ///
-    /// Like [`TOTP::new_with_digest`] and [`TOTP::from_utf8_with_digest`] this
-    /// method allows a digest to be specified instead of the default SHA1.
+    /// Defaults to using 6 digits and a 30 seconds period.
     ///
     /// # Panics
     /// This method panics if the provided string is not correctly base32 encoded.
@@ -135,30 +142,22 @@ impl TOTP {
 
 // All otp generation methods for the [`TOTP`] struct.
 impl TOTP {
-    /// Generates and returns the TOTP value for the time with the
-    /// specified digits.
+    /// Generates and returns the TOTP value for the specified time.
     ///
-    /// The time must be specified in seconds to calculate the correct
-    /// one-time password.
-    ///
-    /// As this method doesn't specify time steps or a starting time,
-    /// the starting time is assumed to be 0 and the time step is set
-    /// to the default of 30 seconds.
+    /// The time must be specified in seconds to calculate the correct one-time password.
     ///
     /// # Panics
-    /// This method panics if the called [`TOTP::get_otp_with_custom`] method
+    /// This method panics if the called [`TOTP::get_otp_with_custom_time_start`] method
     /// does, which would happen if the hash's secret is incorrectly given.
     pub fn get_otp(&self, time: u64) -> u32 {
         self.get_otp_with_custom_time_start(time, 0)
     }
 
-    /// Generates and returns the TOTP value for the time with a provided step,
-    /// start time, and digit count
+    /// Generates and returns the TOTP value for the specified time.
     ///
-    /// Like with the [`TOTP::get_otp`] method, the time should be provided in
-    /// seconds for proper calculation
+    /// The time must be specified in seconds to calculate the correct one-time password.
     ///
-    /// This method allows custom start times and time steps to be provided.
+    /// This method allows a custom start time to be provided.
     ///
     /// # Panics
     /// This method panics if the hash's secret is incorrectly given.
