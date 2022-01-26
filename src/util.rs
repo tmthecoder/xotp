@@ -19,7 +19,6 @@ use crate::totp::TOTP;
 /// may not support other digest algorithms.
 ///
 /// [RFC6238]: https://datatracker.ietf.org/doc/html/rfc6238
-
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
 #[cfg_attr(feature = "ffi", repr(C))]
 pub enum MacDigest {
@@ -77,7 +76,11 @@ pub(crate) fn base32_decode(data: &str) -> Option<Vec<u8>> {
 
 /// Result of an otpauth URI parsing.
 ///
-/// It's either a TOTP or a HOTP with its current counter.
+/// As the URI can return either an [HOTP] or [TOTP] instance,
+/// this enum is returned as a wrapper around both types.
+///
+/// If an [HOTP] instance is returned, a second value is returned
+/// signifying the counter's value.
 #[derive(Debug)]
 #[cfg_attr(feature = "ffi", repr(C))]
 pub enum ParseResult {
@@ -86,6 +89,10 @@ pub enum ParseResult {
 }
 
 /// Different error types of the optauth URI parsing.
+///
+/// Represents each error that could occur while parsing the otpauth URI
+/// in an enum. The returned error may have an associated message or
+/// [url::ParseError] with more information
 #[derive(Debug)]
 #[cfg_attr(feature = "ffi", repr(C))]
 pub enum ParseError {
@@ -102,8 +109,13 @@ pub enum ParseError {
     InvalidPeriod(String),
 }
 
-/// Parses an otpauth URI, which is the string format of the QR codes usually given by platforms for TOTP.
-/// This method is safe and shouldn't panic.
+/// Parses an otpauth URI.
+///
+/// This is generally the string format of QR codes provided by
+/// authentication services
+///
+/// This method is safe and shouldn't panic. It will return an error if the
+/// provided uri is invalid.
 pub fn parse_otpauth_uri(uri: &str) -> Result<ParseResult, ParseError> {
     use ParseError::*;
 
