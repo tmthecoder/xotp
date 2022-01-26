@@ -6,14 +6,14 @@ static SECRET_UTF8_SHA1: &str = "12345678901234567890";
 static SECRET_BYTES_SHA1: &[u8] = SECRET_UTF8_SHA1.as_bytes();
 static SECRET_BASE32_SHA1: &str = "GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ";
 
-// RTC6238 SHA256 Secret
+// RFC6238 SHA256 Secret
 static SECRET_UTF8_SHA256: &str = "12345678901234567890\
         123456789012";
 static SECRET_BYTES_SHA256: &[u8] = SECRET_UTF8_SHA256.as_bytes();
 static SECRET_BASE32_SHA256: &str = "GEZDGNBVGY3TQOJQGEZ\
         DGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZA";
 
-// RTC6238 SHA512 Secret
+// RFC6238 SHA512 Secret
 static SECRET_UTF8_SHA512: &str = "12345678901234567890\
         12345678901234567890123456789012345678901234";
 static SECRET_BYTES_SHA512: &[u8] = SECRET_UTF8_SHA512.as_bytes();
@@ -78,44 +78,44 @@ fn run_rfc_test_base32_with_digest(time: u64, digest: MacDigest) -> u32 {
     totp.get_otp(time)
 }
 
-// All SHA-1 Tests for TOTP from RTC6238
+// All SHA-1 Tests for TOTP from rfc6238
 // Tests 1-2 ran with 'SECRET_BYTES_SHA1'
 #[test]
-fn rtc_test_1_sha1() {
+fn rfc_test_1_sha1() {
     assert_eq!(run_rfc_test_bytes(59), 94287082)
 }
 
 #[test]
-fn rtc_test_2_sha1() {
+fn rfc_test_2_sha1() {
     assert_eq!(run_rfc_test_bytes(1111111109), 07081804)
 }
 
 // Tests 3-4 ran with 'SECRET_UTF8_SHA1'
 #[test]
-fn rtc_test_3_sha1() {
+fn rfc_test_3_sha1() {
     assert_eq!(run_rfc_test_utf8(1111111111), 14050471)
 }
 
 #[test]
-fn rtc_test_4_sha1() {
+fn rfc_test_4_sha1() {
     assert_eq!(run_rfc_test_utf8(1234567890), 89005924)
 }
 
 // Tests 5-6 ran with 'SECRET_BASE32_SHA1'
 #[test]
-fn rtc_test_5_sha1() {
+fn rfc_test_5_sha1() {
     assert_eq!(run_rfc_test_base32(2000000000), 69279037)
 }
 
 #[test]
-fn rtc_test_6_sha1() {
+fn rfc_test_6_sha1() {
     assert_eq!(run_rfc_test_base32(20000000000), 65353130)
 }
 
-// All SHA-256 Tests for TOTP from RTC6238
+// All SHA-256 Tests for TOTP from rfc6238
 // Tests 1-2 ran with 'SECRET_BYTES_SHA256'
 #[test]
-fn rtc_test_1_sha256() {
+fn rfc_test_1_sha256() {
     assert_eq!(
         run_rfc_test_bytes_with_digest(59, MacDigest::SHA256),
         46119246
@@ -123,7 +123,7 @@ fn rtc_test_1_sha256() {
 }
 
 #[test]
-fn rtc_test_2_sha256() {
+fn rfc_test_2_sha256() {
     assert_eq!(
         run_rfc_test_bytes_with_digest(1111111109, MacDigest::SHA256),
         68084774
@@ -132,7 +132,7 @@ fn rtc_test_2_sha256() {
 
 // Tests 3-4 ran with 'SECRET_UTF8_SHA256'
 #[test]
-fn rtc_test_3_sha256() {
+fn rfc_test_3_sha256() {
     assert_eq!(
         run_rfc_test_utf8_with_digest(1111111111, MacDigest::SHA256),
         67062674
@@ -140,7 +140,7 @@ fn rtc_test_3_sha256() {
 }
 
 #[test]
-fn rtc_test_4_sha256() {
+fn rfc_test_4_sha256() {
     assert_eq!(
         run_rfc_test_utf8_with_digest(1234567890, MacDigest::SHA256),
         91819424
@@ -149,7 +149,7 @@ fn rtc_test_4_sha256() {
 
 // Tests 5-6 ran with 'SECRET_BASE32_SHA256'
 #[test]
-fn rtc_test_5_sha256() {
+fn rfc_test_5_sha256() {
     assert_eq!(
         run_rfc_test_base32_with_digest(2000000000, MacDigest::SHA256),
         90698825
@@ -157,17 +157,17 @@ fn rtc_test_5_sha256() {
 }
 
 #[test]
-fn rtc_test_6_sha256() {
+fn rfc_test_6_sha256() {
     assert_eq!(
         run_rfc_test_base32_with_digest(20000000000, MacDigest::SHA256),
         77737706
     )
 }
 
-// All SHA-512 Tests for TOTP from RTC6238
+// All SHA-512 Tests for TOTP from rfc6238
 // Tests 1-2 ran with 'SECRET_BYTES_SHA512'
 #[test]
-fn rtc_test_1_sha512() {
+fn rfc_test_1_sha512() {
     assert_eq!(
         run_rfc_test_bytes_with_digest(59, MacDigest::SHA512),
         90693936
@@ -175,7 +175,7 @@ fn rtc_test_1_sha512() {
 }
 
 #[test]
-fn rtc_test_2_sha512() {
+fn rfc_test_2_sha512() {
     assert_eq!(
         run_rfc_test_bytes_with_digest(1111111109, MacDigest::SHA512),
         25091201
@@ -184,7 +184,7 @@ fn rtc_test_2_sha512() {
 
 // Tests 3-4 ran with 'SECRET_UTF8_SHA512'
 #[test]
-fn rtc_test_3_sha512() {
+fn rfc_test_3_sha512() {
     assert_eq!(
         run_rfc_test_utf8_with_digest(1111111111, MacDigest::SHA512),
         99943326
@@ -192,7 +192,7 @@ fn rtc_test_3_sha512() {
 }
 
 #[test]
-fn rtc_test_4_sha512() {
+fn rfc_test_4_sha512() {
     assert_eq!(
         run_rfc_test_utf8_with_digest(1234567890, MacDigest::SHA512),
         93441116
@@ -201,7 +201,7 @@ fn rtc_test_4_sha512() {
 
 // Tests 5-6 ran with 'SECRET_BASE32_SHA512'
 #[test]
-fn rtc_test_5_sha512() {
+fn rfc_test_5_sha512() {
     assert_eq!(
         run_rfc_test_base32_with_digest(2000000000, MacDigest::SHA512),
         38618901
@@ -209,7 +209,7 @@ fn rtc_test_5_sha512() {
 }
 
 #[test]
-fn rtc_test_6_sha512() {
+fn rfc_test_6_sha512() {
     assert_eq!(
         run_rfc_test_base32_with_digest(20000000000, MacDigest::SHA512),
         47863826
