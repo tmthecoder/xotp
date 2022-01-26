@@ -43,7 +43,7 @@ impl HOTP {
         }
     }
 
-    /// Creates a new HOTP instance from a utf8-encoded string secret and the number of digits.
+    /// Creates a new HOTP instance from an utf8-encoded string secret and the number of digits.
     pub fn new_from_utf8(secret: &str, digits: u32) -> Self {
         HOTP::new(secret.as_bytes(), digits)
     }
@@ -57,8 +57,14 @@ impl HOTP {
         HOTP::new(&decoded, digits)
     }
 
-    /// Creates a new HOTP instance from a utf8-encoded string secret and a default number of 6 digits.
-    pub fn from_utf8(secret: &str) -> Self {
+    /// Creates a new HOTP instance from a byte-array representation of the secret and
+    /// a default number of 6 digits.
+    pub fn default_from_secret(secret: &[u8]) -> Self {
+        HOTP::new(secret, 6)
+    }
+
+    /// Creates a new HOTP instance from an utf8-encoded string secret and a default number of 6 digits.
+    pub fn default_from_utf8(secret: &str) -> Self {
         HOTP::new_from_utf8(secret, 6)
     }
 
@@ -66,7 +72,7 @@ impl HOTP {
     ///
     /// # Panics
     /// This method panics if the provided string is not correctly base32 encoded.
-    pub fn from_base32(secret: &str) -> Self {
+    pub fn default_from_base32(secret: &str) -> Self {
         HOTP::new_from_base32(secret, 6)
     }
 }

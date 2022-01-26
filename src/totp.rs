@@ -19,7 +19,7 @@ pub struct TOTP {
     /// The secret key used in the HMAC process.
     ///
     /// Often given as a Base32 key, which can be conveniently initialized using
-    /// [`TOTP::from_base32`] constructors.
+    /// [`TOTP::default_from_base32`] constructors.
     secret: Vec<u8>,
 
     /// The digest to use in the HMAC process.
@@ -71,15 +71,15 @@ impl TOTP {
     ///
     /// Defaults to using [`MacDigest::SHA1`] as the digest for HMAC operations,
     /// 6 digits and a 30 seconds period.
-    pub fn from_secret(secret: &[u8]) -> Self {
-        TOTP::from_secret_with_digest(secret, MacDigest::SHA1)
+    pub fn default_from_secret(secret: &[u8]) -> Self {
+        TOTP::default_from_secret_with_digest(secret, MacDigest::SHA1)
     }
 
     /// Creates a new TOTP instance with a byte-array representation of the secret and
     /// a digest algorithm.
     ///
     /// Defaults to using 6 digits and a 30 seconds period.
-    pub fn from_secret_with_digest(secret: &[u8], mac_digest: MacDigest) -> Self {
+    pub fn default_from_secret_with_digest(secret: &[u8], mac_digest: MacDigest) -> Self {
         TOTP::new(secret, mac_digest, 6, 30)
     }
 
@@ -87,15 +87,15 @@ impl TOTP {
     ///
     /// Defaults to using [`MacDigest::SHA1`] as the digest for HMAC operations,
     /// 6 digits and a 30 seconds period.
-    pub fn from_utf8(secret: &str) -> Self {
-        TOTP::from_utf8_with_digest(secret, MacDigest::SHA1)
+    pub fn default_from_utf8(secret: &str) -> Self {
+        TOTP::default_from_utf8_with_digest(secret, MacDigest::SHA1)
     }
 
     /// Creates a new TOTP instance with an utf8 representation of the secret and
     /// a digest algorithm.
     ///
     /// Defaults to using 6 digits and a 30 seconds period.
-    pub fn from_utf8_with_digest(secret: &str, mac_digest: MacDigest) -> Self {
+    pub fn default_from_utf8_with_digest(secret: &str, mac_digest: MacDigest) -> Self {
         TOTP::new_from_utf8(secret, mac_digest, 6, 30)
     }
 
@@ -106,8 +106,8 @@ impl TOTP {
     ///
     /// # Panics
     /// This method panics if the provided string is not correctly base32 encoded.
-    pub fn from_base32(secret: &str) -> Self {
-        TOTP::from_base32_with_digest(secret, MacDigest::SHA1)
+    pub fn default_from_base32(secret: &str) -> Self {
+        TOTP::default_from_base32_with_digest(secret, MacDigest::SHA1)
     }
 
     /// Creates a new TOTP instance with a base32 representation of the secret and
@@ -117,7 +117,7 @@ impl TOTP {
     ///
     /// # Panics
     /// This method panics if the provided string is not correctly base32 encoded.
-    pub fn from_base32_with_digest(secret: &str, mac_digest: MacDigest) -> Self {
+    pub fn default_from_base32_with_digest(secret: &str, mac_digest: MacDigest) -> Self {
         TOTP::new_from_base32(secret, mac_digest, 6, 30)
     }
 }

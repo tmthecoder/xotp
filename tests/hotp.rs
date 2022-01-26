@@ -14,14 +14,14 @@ fn run_rfc_test_bytes(count: u64) -> u32 {
 /// Generic test method to get the HOTP code with
 /// the Secret Key as a string literal
 fn run_rfc_test_utf8(count: u64) -> u32 {
-    let hotp = HOTP::from_utf8(SECRET_UTF8);
+    let hotp = HOTP::default_from_utf8(SECRET_UTF8);
     hotp.get_otp(count)
 }
 
 /// Generic test method to get the HOTP code with
 /// the Secret Key as a base32-encoded string
 fn run_rfc_test_base32(count: u64) -> u32 {
-    let hotp = HOTP::from_base32(SECRET_BASE32);
+    let hotp = HOTP::default_from_base32(SECRET_BASE32);
     hotp.get_otp(count)
 }
 

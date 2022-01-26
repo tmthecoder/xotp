@@ -14,7 +14,7 @@
 //!     let secret = "secret";
 //!     let counter = 0;
 //!     // Get a HOTP instance with a '&str' secret
-//!     let hotp_str = HOTP::from_utf8(secret);
+//!     let hotp_str = HOTP::default_from_utf8(secret);
 //!     // Get an otp with the given counter
 //!     let otp_from_str = hotp_str.get_otp(counter);
 //!     println!("The otp from hotp_str: {}", otp_from_str);
@@ -41,7 +41,7 @@
 //!         .expect("Error getting time")
 //!         .as_secs();
 //!     // Get a TOTP instance with an '&str' secret and default SHA1 Digest
-//!     let totp_sha1_str = TOTP::from_utf8(secret);
+//!     let totp_sha1_str = TOTP::default_from_utf8(secret);
 //!     // Get an otp with the given counter and elapsed seconds
 //!     let otp_sha1 = totp_sha1_str.get_otp(elapsed_seconds);
 //!     println!("The otp from totp_sha1_str: {}", otp_sha1);
@@ -52,7 +52,7 @@
 //!         secret.as_bytes(),
 //!         MacDigest::SHA256, // SHA256 algorithm
 //!         8,  // 8 digits
-//!         60  // 60 seconds interval
+//!         60  // 60-second interval
 //!     );
 //!     // Get an otp with the given counter, time and other custom params
 //!     let otp_sha256 = totp_sha256_bytes.get_otp_with_custom_time_start(
