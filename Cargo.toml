@@ -4,10 +4,10 @@ description = "An easy-to-use library for HOTP and TOTP authentication"
 repository = "https://github.com/tmthecoder/xotp"
 readme = "README.md"
 license = "MIT"
-keywords = ["otp", "hotp", "totp"]
+keywords = ["otp", "hotp", "totp", "otpauth"]
 categories = ["cryptography"]
 authors = ["Tejas Mehta <tmthecoder@gmail.com>"]
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 
 [features]
@@ -19,3 +19,4 @@ hmac = "0.12.0"
 sha-1 = "0.10.0"
 sha2 = "0.10.1"
 base32 = "0.4.0"
+url = "2.2.2"
