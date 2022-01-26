@@ -10,6 +10,10 @@ authors = ["Tejas Mehta <tmthecoder@gmail.com>"]
 version = "0.2.0"
 edition = "2021"
 
+[features]
+default = []
+ffi = []
+
 [dependencies]
 hmac = "0.12.0"
 sha-1 = "0.10.0"

@@ -19,7 +19,9 @@ use crate::totp::TOTP;
 /// may not support other digest algorithms.
 ///
 /// [RFC6238]: https://datatracker.ietf.org/doc/html/rfc6238
+
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+#[cfg_attr(feature = "ffi", repr(C))]
 pub enum MacDigest {
     SHA1,
     SHA256,
@@ -77,6 +79,7 @@ pub(crate) fn base32_decode(data: &str) -> Option<Vec<u8>> {
 ///
 /// It's either a TOTP or a HOTP with its current counter.
 #[derive(Debug)]
+#[cfg_attr(feature = "ffi", repr(C))]
 pub enum ParseResult {
     TOTP(TOTP),
     HOTP(HOTP, u64),
@@ -84,6 +87,7 @@ pub enum ParseResult {
 
 /// Different error types of the optauth URI parsing.
 #[derive(Debug)]
+#[cfg_attr(feature = "ffi", repr(C))]
 pub enum ParseError {
     UriParseError(url::ParseError),
     WrongScheme(String),
