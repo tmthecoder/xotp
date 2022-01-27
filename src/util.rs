@@ -20,7 +20,6 @@ use crate::totp::TOTP;
 ///
 /// [RFC6238]: https://datatracker.ietf.org/doc/html/rfc6238
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
-#[cfg_attr(feature = "ffi", repr(C))]
 pub enum MacDigest {
     SHA1,
     SHA256,
@@ -82,7 +81,6 @@ pub(crate) fn base32_decode(data: &str) -> Option<Vec<u8>> {
 /// If an [HOTP] instance is returned, a second value is returned
 /// signifying the counter's value.
 #[derive(Debug)]
-#[cfg_attr(feature = "ffi", repr(C))]
 pub enum ParseResult {
     TOTP(TOTP),
     HOTP(HOTP, u64),
@@ -94,7 +92,6 @@ pub enum ParseResult {
 /// in an enum. The returned error may have an associated message or
 /// [url::ParseError] with more information
 #[derive(Debug)]
-#[cfg_attr(feature = "ffi", repr(C))]
 pub enum ParseError {
     UriParseError(url::ParseError),
     WrongScheme(String),

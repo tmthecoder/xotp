@@ -18,7 +18,6 @@ use crate::util::{base32_decode, get_code, hash_generic, MacDigest};
 /// [RFC4226]: https://datatracker.ietf.org/doc/html/rfc4226
 
 #[derive(Debug, Clone, Hash)]
-#[cfg_attr(feature = "ffi", repr(C))]
 pub struct HOTP {
     /// The secret key used in the HMAC process.
     ///

@@ -7,12 +7,8 @@ license = "MIT"
 keywords = ["otp", "hotp", "totp", "otpauth"]
 categories = ["cryptography"]
 authors = ["Tejas Mehta <tmthecoder@gmail.com>"]
-version = "0.2.0"
+version = "0.3.0"
 edition = "2021"
-
-[features]
-default = []
-ffi = []
 
 [dependencies]
 hmac = "0.12.0"
