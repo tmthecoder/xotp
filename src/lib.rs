@@ -17,13 +17,13 @@
 //!     let hotp_str = HOTP::default_from_utf8(secret);
 //!     // Get an otp with the given counter
 //!     let otp_from_str = hotp_str.get_otp(counter);
-//!     println!("The otp from hotp_str: {}", otp_from_str);
+//!     println!("The otp from hotp_str: {}", otp_from_str.as_string());
 //!
 //!     // Alternatively, get a HOTP instance with a '&[u8]' secret
 //!     let hotp_bytes = HOTP::new(secret.as_bytes(), 6);
 //!     // Get an otp with the given counter
 //!     let otp_from_bytes = hotp_bytes.get_otp(counter);
-//!     println!("The otp from hotp_bytes: {}", otp_from_bytes);
+//!     println!("The otp from hotp_bytes: {}", otp_from_bytes.as_string());
 //! }
 //! ```
 //!
@@ -44,7 +44,7 @@
 //!     let totp_sha1_str = TOTP::default_from_utf8(secret);
 //!     // Get an otp with the given counter and elapsed seconds
 //!     let otp_sha1 = totp_sha1_str.get_otp(elapsed_seconds);
-//!     println!("The otp from totp_sha1_str: {}", otp_sha1);
+//!     println!("The otp from totp_sha1_str: {}", otp_sha1.as_string());
 //!
 //!     // Alternatively get a TOTP instance with an '&[u8]' secret
 //!     // and different digest (Sha256 or Sha512)
@@ -59,7 +59,7 @@
 //!         elapsed_seconds,
 //!         0, // Start time at unix epoch
 //!     );
-//!     println!("The otp from totp_sha256_bytes: {}", otp_sha256);
+//!     println!("The otp from totp_sha256_bytes: {}", otp_sha256.as_string());
 //! }
 //! ```
 //!
