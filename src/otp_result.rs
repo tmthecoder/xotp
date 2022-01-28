@@ -1,6 +1,6 @@
 use std::time::{SystemTime, UNIX_EPOCH};
 
-struct OTPResult {
+pub struct OTPResult {
     digits: u32,
     code: u32,
 }

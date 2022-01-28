@@ -1,5 +1,6 @@
 // Implementation of the HOTP standard according to RFC4226 by Tejas Mehta
 
+use crate::otp_result::OTPResult;
 use crate::util::{base32_decode, get_code, hash_generic, MacDigest};
 
 /// A HOTP Generator
@@ -101,13 +102,14 @@ impl HOTP {
     ///
     /// # Panics
     /// This method panics if the hash's secret is incorrectly given.
-    pub fn get_otp(&self, counter: u64) -> u32 {
+    pub fn get_otp(&self, counter: u64) -> OTPResult {
         let hash = hash_generic(&counter.to_be_bytes(), &self.secret, &MacDigest::SHA1);
         let offset = (hash[hash.len() - 1] & 0xf) as usize;
         let bytes: [u8; 4] = hash[offset..offset + 4]
             .try_into()
             .expect("Failed byte get");
 
-        get_code(bytes, self.digits)
+        let code = get_code(bytes, self.digits);
+        OTPResult::new(self.digits, code)
     }
 }
