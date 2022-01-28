@@ -1,5 +1,7 @@
-use std::time::{SystemTime, UNIX_EPOCH};
+use std::fmt;
+use std::fmt::Formatter;
 
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
 pub struct OTPResult {
     digits: u32,
     code: u32,
@@ -22,5 +24,11 @@ impl OTPResult {
 
     pub fn as_u32(&self) -> u32 {
         self.code
+    }
+}
+
+impl fmt::Display for OTPResult {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+       write!(f, "{}", self.as_string())
     }
 }
