@@ -149,6 +149,29 @@ impl TOTP {
     }
 }
 
+/// All helper methods for totp generation
+impl TOTP {
+
+    /// Returns the time in seconds until an OTP refresh is needed.
+    ///
+    /// Just like the corresponding [`TOTP::get_otp`] method, this method
+    /// takes the current system time in seconds.
+    pub fn time_until_refresh(&self, time: u64) -> u64 {
+        self.time_until_refresh_with_start(time, 0)
+    }
+
+    /// Returns the time in seconds until an OTP refresh is needed.
+    ///
+    /// Just like the corresponding [`TOTP::get_otp_with_custom_time_start`]
+    /// method, this method takes the current time in seconds along with a
+    /// specified start time in case an offset is desired. Both values must be
+    /// in seconds.
+    pub fn time_until_refresh_with_start(&self, time: u64, time_start: u64) -> u64 {
+        let time_until = (time - time_start) % self.period;
+        if time_until == 0 { self.period } else { time_until }
+    }
+}
+
 /// All otp generation methods for the [`TOTP`] struct.
 impl TOTP {
     /// Generates and returns the TOTP value for the specified time.
