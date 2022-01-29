@@ -34,7 +34,7 @@ impl OTPResult {
     pub fn get_digits(&self) -> u32 { self.digits }
 }
 
-/// Conveneince code getters for the [`OTPResult`] struct
+/// Convenience code getters for the [`OTPResult`] struct
 impl OTPResult {
     /// Returns the OTP as a formatted string of length [`OTPResult.digits`].
     ///
