@@ -1,3 +1,4 @@
+use crate::otp_result::OTPResult;
 use crate::util::{base32_decode, get_code, hash_generic, MacDigest};
 
 /// A TOTP generator
@@ -130,7 +131,7 @@ impl TOTP {
     }
 }
 
-// All getters
+/// All getters for the [`TOTP`] struct
 impl TOTP {
     /// Gets the algorithm used for code generation.
     pub fn get_digest(&self) -> MacDigest {
@@ -148,7 +149,7 @@ impl TOTP {
     }
 }
 
-// All otp generation methods for the [`TOTP`] struct.
+/// All otp generation methods for the [`TOTP`] struct.
 impl TOTP {
     /// Generates and returns the TOTP value for the specified time.
     ///
@@ -158,7 +159,7 @@ impl TOTP {
     /// # Panics
     /// This method panics if the [`TOTP::get_otp_with_custom_time_start`]
     /// method does, which happens if the hash's secret is incorrectly given.
-    pub fn get_otp(&self, time: u64) -> u32 {
+    pub fn get_otp(&self, time: u64) -> OTPResult {
         self.get_otp_with_custom_time_start(time, 0)
     }
 
@@ -171,7 +172,7 @@ impl TOTP {
     ///
     /// # Panics
     /// This method panics if the hash's secret is incorrectly given.
-    pub fn get_otp_with_custom_time_start(&self, time: u64, time_start: u64) -> u32 {
+    pub fn get_otp_with_custom_time_start(&self, time: u64, time_start: u64) -> OTPResult {
         let time_count = (time - time_start) / self.period;
 
         let hash = hash_generic(&time_count.to_be_bytes(), &self.secret, &self.mac_digest);
@@ -180,6 +181,8 @@ impl TOTP {
             .try_into()
             .expect("Failed byte get");
 
-        get_code(bytes, self.digits)
+
+        let code = get_code(bytes, self.digits);
+        OTPResult::new(self.digits, code)
     }
 }

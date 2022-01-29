@@ -8,21 +8,21 @@ static SECRET_BASE32: &str = "GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ";
 /// the Secret Key as a byte array
 fn run_rfc_test_bytes(count: u64) -> u32 {
     let hotp = HOTP::new(SECRET_BYTES, 6);
-    hotp.get_otp(count)
+    hotp.get_otp(count).as_u32()
 }
 
 /// Generic test method to get the HOTP code with
 /// the Secret Key as a string literal
 fn run_rfc_test_utf8(count: u64) -> u32 {
     let hotp = HOTP::default_from_utf8(SECRET_UTF8);
-    hotp.get_otp(count)
+    hotp.get_otp(count).as_u32()
 }
 
 /// Generic test method to get the HOTP code with
 /// the Secret Key as a base32-encoded string
 fn run_rfc_test_base32(count: u64) -> u32 {
     let hotp = HOTP::default_from_base32(SECRET_BASE32);
-    hotp.get_otp(count)
+    hotp.get_otp(count).as_u32()
 }
 
 // All RFC4226 Test Cases (All SHA1)

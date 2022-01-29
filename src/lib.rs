@@ -80,3 +80,4 @@
 pub mod hotp;
 pub mod totp;
 pub mod util;
+pub mod otp_result;
