@@ -167,7 +167,11 @@ impl TOTP {
     /// specified start time in case an offset is desired. Both values must be
     /// in seconds.
     pub fn time_until_refresh_with_start(&self, time: u64, time_start: u64) -> u64 {
-        (time - time_start) % period
+        let time_until = (time - time_start) % self.period;
+        if time_until == 0 {
+            return self.period;
+        }
+        time_until
     }
 }
 

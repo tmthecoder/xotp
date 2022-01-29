@@ -215,3 +215,28 @@ fn rfc_test_6_sha512() {
         47863826
     )
 }
+
+// Tests to check the time_until_refresh methods.
+#[test]
+fn test_time_until() {
+    let totp = TOTP::default_from_base32("SecretKey");
+    assert_eq!(totp.time_until_refresh(15), 15);
+}
+
+#[test]
+fn test_time_until_at_edge() {
+    let totp = TOTP::default_from_base32("SecretKey");
+    assert_eq!(totp.time_until_refresh(30), 30)
+}
+
+#[test]
+fn test_time_until_with_start() {
+    let totp = TOTP::default_from_base32("SecretKey");
+    assert_eq!(totp.time_until_refresh_with_start(30, 15), 15)
+}
+
+#[test]
+fn test_time_until_with_start_at_edge() {
+    let totp = TOTP::default_from_base32("SecretKey");
+    assert_eq!(totp.time_until_refresh_with_start(45, 15), 30)
+}
