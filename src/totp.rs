@@ -168,10 +168,7 @@ impl TOTP {
     /// in seconds.
     pub fn time_until_refresh_with_start(&self, time: u64, time_start: u64) -> u64 {
         let time_until = (time - time_start) % self.period;
-        if time_until == 0 {
-            return self.period;
-        }
-        time_until
+        if time_until == 0 { self.period } else { time_until }
     }
 }
 
