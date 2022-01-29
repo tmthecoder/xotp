@@ -131,7 +131,7 @@ impl TOTP {
     }
 }
 
-// All getters
+/// All getters for the [`TOTP`] struct
 impl TOTP {
     /// Gets the algorithm used for code generation.
     pub fn get_digest(&self) -> MacDigest {
@@ -149,7 +149,7 @@ impl TOTP {
     }
 }
 
-// All otp generation methods for the [`TOTP`] struct.
+/// All otp generation methods for the [`TOTP`] struct.
 impl TOTP {
     /// Generates and returns the TOTP value for the specified time.
     ///
