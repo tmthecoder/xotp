@@ -7,7 +7,7 @@ license = "MIT"
 keywords = ["otp", "hotp", "totp", "otpauth"]
 categories = ["cryptography"]
 authors = ["Tejas Mehta <tmthecoder@gmail.com>"]
-version = "0.3.0"
+version = "0.4.0"
 edition = "2021"
 
 [dependencies]
