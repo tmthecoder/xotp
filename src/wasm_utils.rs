@@ -3,6 +3,8 @@ use crate::totp::TOTP;
 use crate::util::parse_otpauth_uri;
 use crate::util;
 
+use wasm_bindgen::prelude::*;
+
 // WASM-specific code (Non C-style enums aren't supported by wasm_bindgen)
 // So we have to add some compatibility to the parse_otpauth_uri method
 
