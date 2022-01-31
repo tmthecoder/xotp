@@ -8,6 +8,9 @@ use url::Url;
 use crate::hotp::HOTP;
 use crate::totp::TOTP;
 
+#[cfg(target_arch = "wasm32")]
+use wasm_bindgen::prelude::*;
+
 /// The digest to use with TOTP.
 ///
 /// All three digests referenced in [RFC6238] are supported:
@@ -20,6 +23,7 @@ use crate::totp::TOTP;
 ///
 /// [RFC6238]: https://datatracker.ietf.org/doc/html/rfc6238
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 pub enum MacDigest {
     SHA1,
     SHA256,

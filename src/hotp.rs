@@ -3,6 +3,9 @@
 use crate::otp_result::OTPResult;
 use crate::util::{base32_decode, get_code, hash_generic, MacDigest};
 
+#[cfg(target_arch = "wasm32")]
+use wasm_bindgen::prelude::*;
+
 /// A HOTP Generator
 ///
 /// Follows the specification listed in [RFC4226]. Needs a secret and
@@ -18,6 +21,7 @@ use crate::util::{base32_decode, get_code, hash_generic, MacDigest};
 ///
 /// [RFC4226]: https://datatracker.ietf.org/doc/html/rfc4226
 
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 #[derive(Debug, Clone, Hash)]
 pub struct HOTP {
     /// The secret key used in the HMAC process.
@@ -33,6 +37,7 @@ pub struct HOTP {
 }
 
 /// All initializer implementations for the [`HOTP`] struct.
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 impl HOTP {
     /// Creates a new HOTP instance with a byte-array representation
     /// of the secret and specified digit count.
@@ -87,6 +92,7 @@ impl HOTP {
 }
 
 /// All getters for the ['HOTP'] struct
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 impl HOTP {
     /// Gets the number of digits of the code.
     pub fn get_digits(&self) -> u32 {
@@ -95,6 +101,7 @@ impl HOTP {
 }
 
 /// All otp generation methods for the [`HOTP`] struct.
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 impl HOTP {
     /// Generates and returns the HOTP value.
     ///
