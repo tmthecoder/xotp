@@ -48,23 +48,31 @@ impl ParseResult {
 #[wasm_bindgen]
 #[derive(Clone)]
 pub struct HOTPResult(
+    /// The HOTP instance
     HOTP,
+    /// The counter needed for OTP generation
     u64
 );
 
+/// Getters for the [`HOTPResult`] struct
 #[wasm_bindgen]
 impl HOTPResult {
+    /// Gets the [`HOTP`] instance associated with this result
     #[wasm_bindgen(getter)]
     pub fn get_hotp(&self) -> HOTP {
         self.0.clone()
     }
 
+    /// Gets the current counter value for use with the HOTP generation
     #[wasm_bindgen(getter)]
     pub fn get_counter(&self) -> u64 {
         self.1
     }
 }
 
+/// A wasm-compatible method to parse an otpauth URI into its specific OTP
+/// generator. Returns the [`ParseResult`] object, which will contain
+/// one or neither of the HOTP/TOTP instances.
 #[wasm_bindgen]
 pub fn parse_otpauth_uri_wasm(uri: &str) -> ParseResult {
     match parse_otpauth_uri(uri) {
