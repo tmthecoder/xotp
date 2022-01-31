@@ -81,3 +81,6 @@ pub mod hotp;
 pub mod totp;
 pub mod util;
 pub mod otp_result;
+
+#[cfg(target_arch = "wasm32")]
+pub mod wasm_utils;

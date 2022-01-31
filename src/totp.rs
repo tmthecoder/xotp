@@ -1,6 +1,9 @@
 use crate::otp_result::OTPResult;
 use crate::util::{base32_decode, get_code, hash_generic, MacDigest};
 
+#[cfg(target_arch = "wasm32")]
+use wasm_bindgen::prelude::*;
+
 /// A TOTP generator
 ///
 /// Follows the specification listed in [RFC6238]. Needs a secret,
@@ -16,6 +19,7 @@ use crate::util::{base32_decode, get_code, hash_generic, MacDigest};
 /// utilized in a similar manner.
 ///
 /// [RFC6238]: https://datatracker.ietf.org/doc/html/rfc6238
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 #[derive(Debug, Clone, Hash)]
 pub struct TOTP {
     /// The secret key used in the HMAC process.
@@ -42,6 +46,7 @@ pub struct TOTP {
 }
 
 /// All initializer implementations for the [`TOTP`] struct
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 impl TOTP {
     /// Generates a new TOTP instance from a byte array representation of the
     /// secret, a digest algorithm, a number of digits,
@@ -132,6 +137,7 @@ impl TOTP {
 }
 
 /// All getters for the [`TOTP`] struct
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 impl TOTP {
     /// Gets the algorithm used for code generation.
     pub fn get_digest(&self) -> MacDigest {
@@ -150,6 +156,7 @@ impl TOTP {
 }
 
 /// All helper methods for totp generation
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 impl TOTP {
 
     /// Returns the time in seconds until an OTP refresh is needed.
@@ -173,6 +180,7 @@ impl TOTP {
 }
 
 /// All otp generation methods for the [`TOTP`] struct.
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 impl TOTP {
     /// Generates and returns the TOTP value for the specified time.
     ///

@@ -1,6 +1,9 @@
 use std::fmt;
 use std::fmt::Formatter;
 
+#[cfg(target_arch = "wasm32")]
+use wasm_bindgen::prelude::*;
+
 /// A convenience struct to hold the result of a [`HOTP`] or [`TOTP`]
 /// generation.
 ///
@@ -13,12 +16,14 @@ use std::fmt::Formatter;
 /// Returned as a result of either [`HOTP::get_otp`], [`TOTP::get_otp`]
 /// or [`TOTP::get_otp_with_custom_time_start`].
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 pub struct OTPResult {
     digits: u32,
     code: u32,
 }
 
 /// Constructors for the [`OTPResult`] struct.
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 impl OTPResult {
     /// Creates a new instance with the provided digit count and OTP code.
     pub fn new(digits: u32, code: u32 ) -> Self {
@@ -27,6 +32,7 @@ impl OTPResult {
 }
 
 /// Getters for the [`OTPResult`] struct.
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 impl OTPResult {
     /// Gets the digit count given to the struct on creation.
     ///
@@ -35,6 +41,7 @@ impl OTPResult {
 }
 
 /// Convenience code getters for the [`OTPResult`] struct
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen)]
 impl OTPResult {
     /// Returns the OTP as a formatted string of length [`OTPResult.digits`].
     ///
