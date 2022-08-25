@@ -1,5 +1,5 @@
 use base32::Alphabet;
-use hmac::{Hmac, Mac};
+use hmac::{digest::KeyInit, Hmac, Mac};
 use sha1::Sha1;
 use sha2::{Sha256, Sha512};
 use std::collections::HashMap;
@@ -62,8 +62,8 @@ pub(crate) fn hash_generic(msg: &[u8], secret: &[u8], digest: &MacDigest) -> Vec
 /// # Panics
 /// The method will panic if the provided secret is invalid and a hash
 /// cannot be generated.
-fn hash_internal<D: Mac>(msg: &[u8], secret: &[u8]) -> Vec<u8> {
-    let mut hmac = <D>::new_from_slice(secret).expect("Failed to initialize HMAC");
+fn hash_internal<D: Mac + KeyInit>(msg: &[u8], secret: &[u8]) -> Vec<u8> {
+    let mut hmac = <D as Mac>::new_from_slice(secret).expect("Failed to initialize HMAC");
     hmac.update(msg);
     hmac.finalize().into_bytes()[..].into()
 }
